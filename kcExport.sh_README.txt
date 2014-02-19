@@ -1,0 +1,32 @@
+kcExport.sh Documentation
+	
+	Creator:  James White 2013
+	Please contact at jwhite007@comcast.net, if you have any questions
+
+Unfortunately Apple's Keychain Access does not allow one to export password items, although one can export other items such as certificates.
+
+Requirements:  
+	
+	Mac with Keychain Access app, BASH, openssl, awk, sed, cut.  Every Mac with OSX should have all of these.
+	
+	~/Library/Keychains/test.keychain
+
+	test.keychain added to "KeyChain Access.app"
+
+	Password for test.keychain is "password"
+
+	Make kcExport.sh executable.
+
+What it does:
+	
+	The script accesses a keychain dump from the Mac's Keychain Access app using the Keychain-Access command-line interface, "security".  It then collates that dump into blocks and then scans each block for the attributes (Name, Account, Password). Those attributes are then placed in the respective arrays.  The elements from these arrays are then parsed into a tab-delimited format.  This output is then saved as an openssl-encrypted file so that the data is never written to disk as plain text.  One can then use the script to decrypt this file to the screen in terminal or to a plain-text tsv file.  Note that decrypting to a plain-text file poses a security risk as passwords will be in plain-text, but for testing purposes on the test keychain, this is fine.  In the future, I will attempt to write an import script which imports directly from the openssl file into various password managers.
+
+How to:
+	
+	First put test.keychain into ~/Library/Keychains/, and then add it in "Keychain Access.app".  The most basic way to run the script is "kc.Export -e" in a terminal.  This will run the script on test.keychain and output the openssl file, passwords.tsv.enc, to the current directory.  The first time that this is run, one will have to hit the "Always Allow" button in the pop-up for each password item to allow access to "security."  
+
+	To decrypt the file to the screen in terminal, type "kc.Export -dt"  To decrypt the file to a plain-text tsv file, type "kc.Export -df".  The file will be named passwords.tsv and placed in the current directory.  
+
+	For more complex options such as using another keychain file, type "kc.Export -h"
+
+	The script uses a password in test.keychain to encrypt and decrypt the openssl file.  The password to access test.keychain is simply "password".
